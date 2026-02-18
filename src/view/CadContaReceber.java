@@ -6,48 +6,62 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import main.Principal;
+import entidade.ContasReceber;
 import controller.ContasReceberDao;
 import util.Alexa;
 
-
-
 public class CadContaReceber extends javax.swing.JFrame {
-    
-    public int gerarProximoIdContaReceber() {
-    int novoId = 1;
 
-    String sqlSelect = "SELECT ultimo_id FROM gerador_id WHERE tabela = 'contas_a_receber' FOR UPDATE";
-    String sqlUpdate = "UPDATE gerador_id SET ultimo_id = ? WHERE tabela = 'contas_a_receber'";
+    private void preencherTela(ContasReceber cr) {
 
-    try (Connection conn = DriverManager.getConnection(
-            "jdbc:mysql://localhost:3306/crud?characterEncoding=utf-8", "root", "025507")) {
+        jCodR.setText(String.valueOf(cr.getCar_id()));
+        jCodAgenR.setText(String.valueOf(cr.getIdAgendamento()));
+        jClienteR.setText(cr.getNomeCliente());
+        jValorFinalR.setText(String.valueOf(cr.getValor_final()));
+        jDateAgendR.setDate(cr.getData_prevista());
+        jDatePagR.setDate(cr.getData_pagamento());
+        jOrigemR.setText(cr.getOrigem());
+        jComboBoxSitR.setSelectedItem(cr.getStatus().toUpperCase());
+        jComboBoxFormPagR.setSelectedItem(cr.getForma_pagamento().toUpperCase());
 
-        conn.setAutoCommit(false); // Inicia transação
-
-        try (PreparedStatement psSelect = conn.prepareStatement(sqlSelect);
-             ResultSet rs = psSelect.executeQuery()) {
-
-            if (rs.next()) {
-                novoId = rs.getInt("ultimo_id") + 1;
-            }
-        }
-
-        try (PreparedStatement psUpdate = conn.prepareStatement(sqlUpdate)) {
-            psUpdate.setInt(1, novoId);
-            psUpdate.executeUpdate();
-        }
-
-        conn.commit();
-
-    } catch (SQLException e) {
-        e.printStackTrace();
     }
 
-    return novoId;
-}
-    
+    public int gerarProximoIdContaReceber() {
+        int novoId = 1;
+
+        String sqlSelect = "SELECT ultimo_id FROM gerador_id WHERE tabela = 'contas_a_receber' FOR UPDATE";
+        String sqlUpdate = "UPDATE gerador_id SET ultimo_id = ? WHERE tabela = 'contas_a_receber'";
+
+        try (Connection conn = DriverManager.getConnection(
+                "jdbc:mysql://localhost:3306/crud?characterEncoding=utf-8", "root", "025507")) {
+
+            conn.setAutoCommit(false); // Inicia transação
+
+            try (PreparedStatement psSelect = conn.prepareStatement(sqlSelect); ResultSet rs = psSelect.executeQuery()) {
+
+                if (rs.next()) {
+                    novoId = rs.getInt("ultimo_id") + 1;
+                }
+            }
+
+            try (PreparedStatement psUpdate = conn.prepareStatement(sqlUpdate)) {
+                psUpdate.setInt(1, novoId);
+                psUpdate.executeUpdate();
+            }
+
+            conn.commit();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return novoId;
+    }
+
     public CadContaReceber() {
         initComponents();
+        jOrigemR.setEditable(false);
+
     }
 
     /**
@@ -172,23 +186,23 @@ public class CadContaReceber extends javax.swing.JFrame {
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap(30, Short.MAX_VALUE)
+                .addGap(68, 68, 68)
                 .addComponent(jButtonNovoR, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(62, 62, 62)
-                .addComponent(jButtonSalvar, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(62, 62, 62)
                 .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(30, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 62, Short.MAX_VALUE)
+                .addComponent(jButtonSalvar, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(74, 74, 74))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addContainerGap(30, Short.MAX_VALUE)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGap(29, 29, 29)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButtonSalvar, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jButtonNovoR, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(30, Short.MAX_VALUE))
+                    .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jButtonSalvar, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(31, Short.MAX_VALUE))
         );
 
         jLabel10.setFont(new java.awt.Font("Segoe UI", 0, 16)); // NOI18N
@@ -197,6 +211,11 @@ public class CadContaReceber extends javax.swing.JFrame {
         jOrigemR.setFont(new java.awt.Font("Segoe UI", 0, 16)); // NOI18N
 
         jButton5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/pesquisar.png"))); // NOI18N
+        jButton5.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton5ActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -266,7 +285,7 @@ public class CadContaReceber extends javax.swing.JFrame {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(145, 145, 145))
+                .addGap(106, 106, 106))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -335,50 +354,66 @@ public class CadContaReceber extends javax.swing.JFrame {
         jDateAgendR.setDate(null);
         jComboBoxFormPagR.setSelectedIndex(0);
         jComboBoxSitR.setSelectedIndex(0);
-        
+
     }//GEN-LAST:event_jButtonNovoRActionPerformed
 
     private void jButtonSalvarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonSalvarActionPerformed
         // TODO add your handling code here:
         if (jClienteR.getText().matches("") || jValorFinalR.getText().matches("")) {
             Alexa.escrevaJanela("Preencha os campos Nome do cliente e Valor");
-        } else{
+        } else {
             java.util.Date dataPagamento = jDatePagR.getDate();
             java.util.Date dataAgendamento = jDateAgendR.getDate();
             Principal.contasReceber.setCar_id(Integer.parseInt(jCodR.getText()));
             Principal.contasReceber.setIdAgendamento(Integer.parseInt(jCodAgenR.getText()));
             //Principal.contasreceber.setIdCliente(Integer.parseInt(jCodClieR.getText()));
             Principal.contasReceber.setIdCliente(Integer.parseInt("7"));
-            
+
             Principal.contasReceber.setData_pagamento(dataPagamento);
-            
+
             Principal.contasReceber.setValor_final(Float.parseFloat(jValorFinalR.getText()));
-            
+
             Principal.contasReceber.setData_prevista(dataAgendamento);
             System.out.println(dataAgendamento);
-            
+
             String formapag = jComboBoxFormPagR.getSelectedItem().toString();
-            Principal.contasReceber.setForma_pagamento(formapag);      
+            Principal.contasReceber.setForma_pagamento(formapag);
             String situacao = jComboBoxSitR.getSelectedItem().toString();
             Principal.contasReceber.setStatus(situacao);
             System.out.println(situacao);
-            
+
             Principal.contasReceber.setOrigem("MANUAL");
-            
+
             boolean cadastrou = Principal.contasReceberDao.inserirContasReceber(Principal.contasReceber);
-            if (cadastrou){
+            if (cadastrou) {
                 Alexa.escrevaJanela("Contas a receber cadastrado com sucesso!");
                 limparCampos();
-            } else{
-                 Alexa.escrevaJanela("Falha ao cadastrar contas a receber !");
-            }  
+            } else {
+                Alexa.escrevaJanela("Falha ao cadastrar contas a receber !");
+            }
         }
     }//GEN-LAST:event_jButtonSalvarActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         // TODO add your handling code here:
-        
+
     }//GEN-LAST:event_jButton2ActionPerformed
+
+    private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
+        // TODO add your handling code here:
+        ContaReceberBuscaDialog dialog
+                = new ContaReceberBuscaDialog(this, true);
+
+        dialog.setVisible(true);
+
+        ContasReceber cr = dialog.getSelecionado();
+
+        if (cr != null) {
+            preencherTela(cr);
+        }
+
+
+    }//GEN-LAST:event_jButton5ActionPerformed
 
     /**
      * @param args the command line arguments

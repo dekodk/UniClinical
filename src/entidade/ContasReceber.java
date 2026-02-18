@@ -7,6 +7,7 @@ public class ContasReceber {
     private int car_id;
     private int idAgendamento;
     private int idCliente;
+    private String nomeCliente;
     private float valor_base;
     private float desconto_acrescimo;
     private float acrescimo;
@@ -41,6 +42,16 @@ public class ContasReceber {
     public void setIdCliente(int idCliente) {
         this.idCliente = idCliente;
     }
+
+    public String getNomeCliente() {
+        return nomeCliente;
+    }
+
+    public void setNomeCliente(String nomeCliente) {
+        this.nomeCliente = nomeCliente;
+    }
+    
+    
 
     public float getValor_base() {
         return valor_base;
